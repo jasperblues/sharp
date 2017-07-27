@@ -24,10 +24,10 @@ VERSION_GSF=1.14.41
 VERSION_EXIF=0.6.21
 VERSION_LCMS2=2.8
 VERSION_JPEG=1.5.1
-VERSION_PNG16=1.6.29
+VERSION_PNG16=1.6.31
 VERSION_WEBP=0.6.0
-VERSION_TIFF=4.0.7
-VERSION_ORC=0.4.26
+VERSION_TIFF=4.0.8
+VERSION_ORC=0.4.27
 VERSION_GDKPIXBUF=2.36.6
 VERSION_FREETYPE=2.8
 VERSION_EXPAT=2.2.0
@@ -116,11 +116,9 @@ cd ${DEPS}/webp
 make install-strip
 
 mkdir ${DEPS}/tiff
-curl -Ls http://download.osgeo.org/libtiff/tiff-${VERSION_TIFF}.tar.gz | tar xzC ${DEPS}/tiff --strip-components=1
-cd ${DEPS}/tiff
-# Apply patches for libtiff vulnerabilities reported since v4.0.7
 VERSION_TIFF_GIT_MASTER_SHA=$(curl -Ls https://api.github.com/repos/vadz/libtiff/git/refs/heads/master | jq -r '.object.sha' | head -c7)
-curl -Ls https://github.com/vadz/libtiff/compare/Release-v4-0-7...master.patch | patch -p1 -t || true
+curl -Ls https://github.com/vadz/libtiff/archive/${VERSION_TIFF_GIT_MASTER_SHA}.tar.gz | tar xzC ${DEPS}/tiff --strip-components=1
+cd ${DEPS}/tiff
 if [ -n "${CHOST}" ]; then autoreconf -fiv; fi
 ./configure --host=${CHOST} --prefix=${TARGET} --enable-shared --disable-static --disable-dependency-tracking --disable-mdi --disable-pixarlog --disable-cxx
 make install-strip
